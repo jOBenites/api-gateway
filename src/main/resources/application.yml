@@ -8,6 +8,15 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: default
+                fallbackUri: forward:/fallback
         - id: ms-customer
           uri: lb://ms-customer
           predicates:
@@ -44,6 +53,39 @@ spring:
               args:
                 name: default
                 fallbackUri: forward:/fallback
+        - id: ms-debitcard
+          uri: lb://ms-debitcard
+          predicates:
+            - Path=/debit-cards/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: default
+                fallbackUri: forward:/fallback
+        - id: ms-debt
+          uri: lb://ms-debt
+          predicates:
+            - Path=/debts/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: default
+                fallbackUri: forward:/fallback
+        - id: ms-wallet
+          uri: lb://ms-wallet
+          predicates:
+            - Path=/wallets/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: default
+                fallbackUri: forward:/fallback
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: ${JWT_SECRET}
 
 resilience4j:
   circuitbreaker:
