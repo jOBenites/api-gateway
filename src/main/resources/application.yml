@@ -80,6 +80,15 @@ spring:
               args:
                 name: default
                 fallbackUri: forward:/fallback
+        - id: ms-report
+          uri: lb://ms-report
+          predicates:
+            - Path=/reports/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: default
+                fallbackUri: forward:/fallback
 
   security:
     oauth2:
